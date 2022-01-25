@@ -1,0 +1,13 @@
+.vs/
+Api/.vs/
+Api/bin/
+Api/obj/
+
+Common/bin/
+Common/obj/
+
+Model/bin/
+Model/obj/
+
+UI/bin/
+UI/obj/

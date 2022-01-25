@@ -1,0 +1,44 @@
+﻿@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Sign in";
+    ViewBag.Page = "login";
+}
+<div class="row mt-5">
+    <div class="col-md-6 offset-3 mt-5">
+        <form id="frmLogin" method="post" asp-antiforgery="true">
+            <section class="card">
+                <div class="card-body">
+                    <h5 class="text-primary">Sign in</h5>
+                    <hr />
+                    <div class="form-group">
+                        <label for="txtUserName">User name:</label>
+                        <div class="input-group has-icon">
+                            <input id="txtUsername" class="form-control" />
+                        </div>
+                        <div data-validation-target="UserName" class="text-danger"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtPassword">Password:</label>
+                        <div class="input-group has-icon">
+                            <input id="txtPassword" type="password" class="form-control" />
+                        </div>
+                        <div data-validation-target="Password" class="text-danger"></div>
+                    </div>
+                    <div class="form-group">
+                        <button id ="btnLogin" type="button" class="btn btn-primary form-control">
+                            <span data-part="text">Sign in</span>
+                        </button>
+                    </div>
+                    <div data-validation-target="General" class="text-danger"></div>
+                </div>
+            </section>
+        </form>
+    </div>
+</div>
+@section Scripts {
+    <script type="module">
+        import LoginController from '/js/login.js';
+        var c = new LoginController();
+    </script>
+}

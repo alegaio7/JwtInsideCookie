@@ -1,0 +1,125 @@
+﻿@page "{handler?}"
+@using Api.DTO;
+@model IndexModel
+@using Microsoft.AspNetCore.Hosting;
+@using Microsoft.Extensions.Hosting;
+@using Api.Common;
+@using Api.Common.Authorization;
+@using Api.Model;
+@{
+    ViewData["Title"] = "Main";
+    ViewBag.Page = "index";
+}
+<div class="row">
+    <h4>Hello @User.GetFullName()</h4>
+</div>
+<div class="row">
+    <div class="offset-3 col-6">
+        <button id="btnGetDocument" type="button" class="btn btn-primary get-doc">
+            Get document
+        </button>
+    </div>
+</div>
+@{
+    var u = User as ApiClaimsPrincipal;
+    var bDisable = "";
+    if (!u.HasRole(RoleDTO.AdministratorRole))
+        bDisable = "disabled ";
+}
+<br />
+<div class="row">
+    <div class="offset-3 cold-6">
+        <button id="btnDeleteDocument" @bDisable type="button" class="btn btn-danger delete-doc">
+            Delete document
+        </button>
+        <div>This button is enabled or disabled according to the role of the current user</div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="offset-3 cold-6">
+        <button id="btnDeleteDocumentAlwaysEnabled" type="button" class="btn btn-danger delete-doc">
+            Delete document
+        </button>
+        <div>This button is always enabled (for any role), in order to allow testing API responses</div>
+    </div>
+</div>
+<br />
+<div class="row">
+    <div class="offset-3 cold-6">
+        <form id="signOutForm" asp-area="" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })" method="post">
+            <button type="submit" class="btn btn-outline-secondary">
+                <span>Sign out</span>
+            </button>
+        </form>
+    </div>
+</div>
+<br />
+<div>
+    <div class="border" id="logDiv">
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $("button.get-doc").click(async function () {
+            await getDocument();
+        });
+
+        $("button.delete-doc").click(async function () {
+            await deleteDocument();
+        });
+
+        async function getDocument() {
+            const response = await fetch("/index/getdocument", {
+                credentials: 'same-origin',
+                method: 'GET',
+                headers: { "Content-type": "application/json" }
+            });
+
+            await processResponse(response);
+        }
+
+        async function deleteDocument() {
+            const response = await fetch("/index/deletedocument", {
+                credentials: 'same-origin',
+                method: 'DELETE',
+                headers: { "Content-type": "application/json" }
+            });
+
+            await processResponse(response);
+        }
+
+        async function processResponse(response) {
+            var ret;
+            if (!response.ok) {
+                var message = await response.text();
+                if (!message)
+                    message = response.statusText;
+                var tmp;
+                try {
+                    tmp = JSON.parse(message); // check if response is a json object
+                } catch (e) {
+                    tmp = { Result: false, Message: message };
+                }
+
+                if (!tmp.StatusCode)
+                    tmp.StatusCode = response.status;
+
+                if (!tmp.Message && !tmp.Result)
+                    tmp.Message = "fetch error";
+                ret = tmp;
+            } else {
+                // if response is ok, then its up to the backend to return an object that has a .Result property or not
+                // depending on the caller. For example, file contents should be plain data, without an added .Result property
+                const contentType = response.headers.get("content-type");
+                if (contentType && contentType.indexOf("application/json") !== -1) {
+                    ret = await response.json();
+                } else {
+                    ret = { Result: false, Message: await response.text() };
+                }
+            }
+
+            $("#logDiv").text(JSON.stringify(ret));
+        }
+    </script>
+}
