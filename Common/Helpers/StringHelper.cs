@@ -12,15 +12,6 @@ namespace Api.Common
             HtmlBreak
         }
 
-        public static string ReplaceHtmlBreak(string text, string repl)
-        {
-            if (string.IsNullOrEmpty(text))
-                return text;
-
-            text = text.Replace("<br/>", repl, StringComparison.InvariantCultureIgnoreCase);
-            return text.Replace("<br>", repl, StringComparison.InvariantCultureIgnoreCase);
-        }
-
         /// <summary>
         /// Cleans a raw string comming from a JSON response. The method removes the leading and trailing quotes,
         /// and replaces cr/lf characters by new line.

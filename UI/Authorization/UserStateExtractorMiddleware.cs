@@ -40,7 +40,6 @@ namespace UI.Authorization
                         userState.UserName = currentPrincipal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sub)?.Value;
                         userState.Name = currentPrincipal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Name)?.Value;
                         userState.Email = currentPrincipal.Claims.FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Email)?.Value;
-                        //context.Items["UserState"] = userState;
 
                         var userIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                         foreach (var c in currentPrincipal.Claims)

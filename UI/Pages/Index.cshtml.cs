@@ -1,4 +1,6 @@
-﻿using Api.DTO;
+﻿using Api.Common;
+using Api.Common.Authorization;
+using Api.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -22,10 +24,17 @@ namespace UI.Pages
 
         public async Task<IActionResult> OnDeleteDeleteDocument()
         {
+            var apiUser = HttpContext.User as ApiClaimsPrincipal;
+            if (apiUser != null && apiUser.HasRole(RoleDTO.AdministratorRole))
+            { 
+                // do something
+            }
             try
             {
                 // pass true to dontAuthenticate to avoid jwt auth, since this is for getting a token
-                await GetContents<string>(HttpContext, $"api/documents/2", HttpMethods.Delete); // <string> is a dummy generic parameter
+                // <string> is a dummy generic parameter, since we don't expect to get any results apart
+                // from a status code, from GetContents
+                await GetContents<string>(HttpContext, $"api/documents/2", HttpMethods.Delete); 
                 return new OkObjectResult(BoxContents(true, null));
             }
             catch (UIGenericHttpException ex)

@@ -102,7 +102,8 @@ namespace UI
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // extracts the UserState claim from the authenticated user and puts it in the httpContext as a ApiClaimsPrincipal
+            // extracts the UserState claim from the authenticated user
+            // and puts it in the httpContext as a ApiClaimsPrincipal (derived from ClaimsPrincipal)
             app.UseMiddleware<UserStateExtractorMiddleware>();
 
             // this middleware checks if a request to the API generated a 401 (Unauthorized) response,
